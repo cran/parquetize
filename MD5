@@ -1,8 +1,7 @@
-2a27a7a4e26200d4d3bf4391546f0a76 *DESCRIPTION
-e7daf1211d7faad9eb4294d49daea8e3 *NAMESPACE
-cbc64c3a6bb34a3a84550e9f02dbc69a *NEWS.md
+13f51cba8de7af56ba6a976baa444cf5 *DESCRIPTION
+9f1a70d98f300dc84ca5f8270a5a52c9 *NAMESPACE
+0946e05b6f535b9fddcc836ab176e146 *NEWS.md
 d01a5bf734efe20743919ae5945cde0e *R/csv_to_parquet.R
-138dc9e4145e5f7baa2bf5284b45fd63 *R/duckdb_to_parquet.R
 a8c67b8be0a0b2b0768f1a6ad2d5333f *R/json_to_parquet.R
 b2d008974bfaef8701bd2aca8d866a29 *R/parquetize_example.R
 8baadb6e2a9ca13480afc5c8cd0ff45f *R/rbind_parquet.R
@@ -10,11 +9,11 @@ b2d008974bfaef8701bd2aca8d866a29 *R/parquetize_example.R
 a8d6f1a2f368fdef753bbc43906306f5 *R/sqlite_to_parquet.R
 f2b4bd6555c267264bbe2365b8b410b2 *R/table_to_parquet.R
 a8e206f87fb013153dfe99d3236daa06 *R/utilities.R
-f810f1effe8c5a34caecf5a0187f6370 *README.md
+dfa482694c86d0b04983ddc9273953c6 *README.md
 0d79ac95b313e91212194a6f7c6b7ec9 *build/vignette.rds
 8375e77f438d578c23a901edfbaf3c35 *inst/doc/aa-conversions.R
-a9b48d7ed12f22496f39b1ee62345d0d *inst/doc/aa-conversions.Rmd
-4df70b71dc8faeb56374138f5d16406e *inst/doc/aa-conversions.html
+4299708d82e62ad051ca82b8ddbb6cd4 *inst/doc/aa-conversions.Rmd
+db1360bfdc389fce693da6e2ef8f1506 *inst/doc/aa-conversions.html
 112bcf1d257fbc72031e71510ea5899d *inst/extdata/iris.duckdb
 db9a32932bf52fe029f70aba026d307f *inst/extdata/iris.json
 59c276901af63c25071dc885cb66032b *inst/extdata/iris.ndjson
@@ -22,7 +21,6 @@ db9a32932bf52fe029f70aba026d307f *inst/extdata/iris.json
 716eceb8aeff1c15da39664e6d7ac5f5 *inst/extdata/iris.sqlite
 d949e8ce82f657bc1c18fd049f983d4c *inst/extdata/region_2022.csv
 a0f1d4ac0e4bba0d2f183f006b1f5d08 *man/csv_to_parquet.Rd
-2a0cd60d637689e34f6f02d5eefe8a0c *man/duckdb_to_parquet.Rd
 6ffd2509ba1f069a5757b00397731ec5 *man/figures/Insee_example_csv.gif
 2900c45cde6218bd8afcb2c99892ebe7 *man/figures/hex_parquetize.png
 8d6f1ab39e993193456dc8611a869075 *man/json_to_parquet.Rd
@@ -75,7 +73,6 @@ d2956ca5bb05023f808eeb35132fb4d2 *tests/testthat/Data/research-and-development-s
 88be1961e38529551bc5e7901c671594 *tests/testthat/Data/species=versicolor/part-0.parquet
 7e94ba5a753c8b0c238e9e9fef124197 *tests/testthat/Data/species=virginica/part-0.parquet
 66d2ca0ac88b4433208862290e0f8fe5 *tests/testthat/_snaps/csv_to_parquet.md
-d7b325fdf6e886323e2d2523ac3bfa61 *tests/testthat/_snaps/duckdb_to_parquet.md
 d480bd6638927c81297a3e76deff1132 *tests/testthat/_snaps/json_to_parquet.md
 cc249fa773fe4ad6cc3a859e900c385b *tests/testthat/_snaps/rds_to_parquet.md
 ba15a55a73149365dfd4673900d21a89 *tests/testthat/_snaps/sqlite_to_parquet.md
@@ -88,11 +85,10 @@ c38d01712ea03cb4a3d2c587679c8db3 *tests/testthat/output/test_data4-6.parquet
 d41d8cd98f00b204e9800998ecf8427e *tests/testthat/outputtest_data1-4.parquet
 65d201fde8687f7744b96a64cabb3c0f *tests/testthat/test-bychunk.R
 7c30d173a23f9ab80fd38d0221d5fccb *tests/testthat/test-csv_to_parquet.R
-afdaa603b2df889e80c5c936cd698422 *tests/testthat/test-duckdb_to_parquet.R
 7a1fa2b0eb7be29f31830c0ba25f58fa *tests/testthat/test-json_to_parquet.R
 45be1f97b15ecde2e3ddaf8c468eacce *tests/testthat/test-parquetize_example.R
 09e354e4f34fe94885b2e635b9f0ffde *tests/testthat/test-rbind_parquet.R
 545d955829b2ab2b317a5f2565ddf4bf *tests/testthat/test-rds_to_parquet.R
 cd35901bbcbbb1a6ceb8cfae9401fc69 *tests/testthat/test-sqlite_to_parquet.R
 70dc7f3ff2c7a1cc16aba480c4502d3f *tests/testthat/test-table_to_parquet.R
-a9b48d7ed12f22496f39b1ee62345d0d *vignettes/aa-conversions.Rmd
+4299708d82e62ad051ca82b8ddbb6cd4 *vignettes/aa-conversions.Rmd
