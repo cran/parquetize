@@ -1,7 +1,7 @@
 Package: parquetize
 Type: Package
 Title: Convert Files to Parquet Format
-Version: 0.5.3
+Version: 0.5.4
 Authors@R: 
     c(person(given = "Damien",
              family = "Dotta",
@@ -24,8 +24,8 @@ Config/testthat/edition: 3
 Imports: haven, arrow, curl, readr, jsonlite, DBI, RSQLite, cli, dplyr
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2023-02-20 15:37:27 UTC; AQEW8W
+Packaged: 2023-03-13 10:39:35 UTC; AQEW8W
 Author: Damien Dotta [aut, cre]
 Maintainer: Damien Dotta <damien.dotta@live.fr>
 Repository: CRAN
-Date/Publication: 2023-02-20 15:50:02 UTC
+Date/Publication: 2023-03-13 11:10:02 UTC
