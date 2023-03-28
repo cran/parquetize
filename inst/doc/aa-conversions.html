@@ -347,7 +347,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>With <code>table_to_parquet()</code></h2>
 <p>For <strong>huge input files in SAS, SPSS and Stata formats</strong>,
 the parquetize package allows you to perform a clever conversion by
-using <code>by_chunk=TRUE</code> in the <a href="https://ddotta.github.io/parquetize/reference/table_to_parquet.html"><code>table_to_parquet()</code></a>
+using <code>chunk_memory_size</code> or <code>chunk_size</code> in the
+<a href="https://ddotta.github.io/parquetize/reference/table_to_parquet.html"><code>table_to_parquet()</code></a>
 function. The native behavior of this function (and all other functions
 in the package) is to load the entire table to be converted into R and
 then write it to disk (in a single file or a partitioned directory).</p>
@@ -355,41 +356,86 @@ then write it to disk (in a single file or a partitioned directory).</p>
 that the R session aborts because it cannot load the entire database
 into memory. This risk is even more present if you work locally on your
 computer and it can be limited if you work on remote servers.<br />
-<code>table_to_parquet()</code> offers this solution which answers a
-need expressed by parquetize users.</p>
-<p><strong>The idea is to split the very large table into “chunks” based
-on the number of rows in the table in order to be able to simultaneously
-:</strong><br />
-- <strong>read a chunk of the very large database</strong><br />
-- <strong>write this chunk in the floor file</strong></p>
+<strong><code>table_to_parquet()</code> offers this solution which
+answers a need expressed by parquetize users.</strong></p>
+<table>
+<tbody>
+<tr class="odd">
+<td><strong>The idea is to split the very large table into “chunks”
+based on memory consumption of input data or on the number of rows in
+the table in order to be able to simultaneously :</strong></td>
+</tr>
+<tr class="even">
+<td>- <strong>read a chunk of the very large database</strong></td>
+</tr>
+<tr class="odd">
+<td>- <strong>write this chunk in the floor file</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Here are examples from the documentation using the iris table.
+There’s two ways to split output files :</p>
+<ul>
+<li>by memory consumption</li>
+<li>by number of lines</li>
+</ul>
+<div id="spliting-data-by-memory-consumption" class="section level3">
+<h3>Spliting data by memory consumption</h3>
+<p><code>table_to_parquet</code> can guess the number of lines to put in
+a file based on the memory consuption with the argument
+<code>chunk_memory_size</code> expressed in Mb.</p>
+<p>Here we cut the 150 rows into chunks of roughly 5 Kb when a file is
+loaded as a tibble.<br />
+In this example we get 2 parquet files of 89 lines called
+<code>iris1-89.parquet</code> and <code>iris90-150.parquet</code></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table_to_parquet</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_to_table =</span> <span class="fu">system.file</span>(<span class="st">&quot;examples&quot;</span>, <span class="st">&quot;iris.sas7bdat&quot;</span>, <span class="at">package =</span> <span class="st">&quot;haven&quot;</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_to_parquet =</span> <span class="fu">tempfile</span>(),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">chunk_memory_size =</span> <span class="dv">5</span> <span class="sc">/</span> <span class="dv">1024</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">encoding =</span> <span class="st">&quot;utf-8&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ The SAS file is available in parquet format under C:\Users\AQEW8W\AppData\Local\Temp\RtmpsBYS0t\file4fe41b51600b/iris1-89.parquet</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ The SAS file is available in parquet format under C:\Users\AQEW8W\AppData\Local\Temp\RtmpsBYS0t\file4fe41b51600b/iris90-150.parquet</span></span></code></pre></div>
+<p>In real life, you should use a <code>chunk_memory_size</code> in the
+Gb range, for example with a SAS file of 50 000 000 lines and using
+chunk_memory_size of 5000 Mb :</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table_to_parquet</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_to_table =</span> <span class="st">&quot;myhugefile.sas7bdat&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_to_parquet =</span> <span class="fu">tempdir</span>(),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">chunk_memory_size =</span> <span class="dv">5000</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">encoding =</span> <span class="st">&quot;utf-8&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="splitting-data-by-number-of-lines" class="section level3">
+<h3>Splitting data by number of lines</h3>
+<blockquote>
 <p>Tip: The number of lines that each chunk must contain must be
 supported by the RAM of your computer/server. Ideally, the number of
 chunks to be defined must be limited. It should be in tens and not
 hundreds to limit the number of intermediate files (see example
 below).</p>
-<p>Here is an example from the documentation using the iris table. Here
-we cut the 150 rows into 3 chunks of 50 rows. In this example we get 3
-parquet files of 50 lines called <code>iris1-50.parquet</code>,
+</blockquote>
+<p>Here we cut the 150 rows into 3 chunks of 50 rows. In this example we
+get 3 parquet files of 50 lines called <code>iris1-50.parquet</code>,
 <code>iris51-100.parquet</code> and <code>iris101-151.parquet</code></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table_to_parquet</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">path_to_table =</span> <span class="fu">system.file</span>(<span class="st">&quot;examples&quot;</span>, <span class="st">&quot;iris.sas7bdat&quot;</span>, <span class="at">package =</span> <span class="st">&quot;haven&quot;</span>),</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">path_to_parquet =</span> <span class="fu">tempfile</span>(),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">by_chunk =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">chunk_size =</span> <span class="dv">50</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">encoding =</span> <span class="st">&quot;utf-8&quot;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table_to_parquet</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">path_to_table =</span> <span class="fu">system.file</span>(<span class="st">&quot;examples&quot;</span>, <span class="st">&quot;iris.sas7bdat&quot;</span>, <span class="at">package =</span> <span class="st">&quot;haven&quot;</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">path_to_parquet =</span> <span class="fu">tempfile</span>(),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">chunk_size =</span> <span class="dv">50</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">encoding =</span> <span class="st">&quot;utf-8&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>In real life, we can perform this kind of request with the parquetize
 API (for example with a SAS file of 50 000 000 lines and defining 25
 chunks of 2 000 000 rows each) :</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table_to_parquet</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">path_to_table =</span> <span class="st">&quot;myhugefile.sas7bdat&quot;</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">path_to_parquet =</span> <span class="fu">tempdir</span>(),</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">by_chunk =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">chunk_size =</span> <span class="dv">2000000</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">encoding =</span> <span class="st">&quot;utf-8&quot;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table_to_parquet</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">path_to_table =</span> <span class="st">&quot;myhugefile.sas7bdat&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">path_to_parquet =</span> <span class="fu">tempdir</span>(),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">chunk_size =</span> <span class="dv">2000000</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">encoding =</span> <span class="st">&quot;utf-8&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Files <code>myhugefile1-2000000.parquet</code>,
 <code>myhugefile2000001-4000000.parquet</code> … will be created.</p>
+</div>
 </div>
 <div id="function-rbind_parquet" class="section level2">
 <h2>Function <code>rbind_parquet()</code></h2>
@@ -401,14 +447,14 @@ you can use the helper function provided with the API of
 This function allows to bind multiple parquet files by row.<br />
 Here’s an example without deleting initial files
 (<code>delete_initial_files</code>=FALSE) :</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind_parquet</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">folder =</span> <span class="fu">tempfile</span>(),</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">output_name =</span> <span class="st">&quot;myhugefile&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">delete_initial_files =</span> <span class="cn">FALSE</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind_parquet</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">folder =</span> <span class="fu">tempfile</span>(),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">output_name =</span> <span class="st">&quot;myhugefile&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">delete_initial_files =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>The <code>myhugefile.parquet</code> file will be created from the
 <code>myhugefile1-2000000.parquet</code>,
-<code>myhugefile2000001-4000000.parquet</code>… files. :tada:</p>
+<code>myhugefile2000001-4000000.parquet</code>… files!</p>
 </div>
 </div>
 
