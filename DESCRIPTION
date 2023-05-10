@@ -1,7 +1,7 @@
 Package: parquetize
 Type: Package
 Title: Convert Files to Parquet Format
-Version: 0.5.5
+Version: 0.5.6.1
 Authors@R: 
     c(person(given = "Damien",
              family = "Dotta",
@@ -25,13 +25,13 @@ BugReports: https://github.com/ddotta/parquetize/issues
 RoxygenNote: 7.2.3
 Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Imports: haven, arrow, curl, readr, jsonlite, DBI, RSQLite, cli, dplyr,
-        tidyselect, lifecycle, tools
+Imports: haven, arrow, curl, readr, jsonlite, DBI, RSQLite, cli,
+        tidyselect, lifecycle, tools, glue, fst, dplyr
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2023-03-28 13:54:44 UTC; AQEW8W
+Packaged: 2023-05-10 11:44:14 UTC; AQEW8W
 Author: Damien Dotta [aut, cre],
   Nicolas Chuche [aut]
 Maintainer: Damien Dotta <damien.dotta@live.fr>
 Repository: CRAN
-Date/Publication: 2023-03-28 14:10:02 UTC
+Date/Publication: 2023-05-10 12:00:02 UTC

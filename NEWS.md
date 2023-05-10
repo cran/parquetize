@@ -1,3 +1,63 @@
+# parquetize 0.5.6.1
+
+This release includes :
+
+#### fst_to_parquet function
+
+- a new [fst_to_parquet](https://ddotta.github.io/parquetize/reference/fst_to_parquet.html) function that converts a fst file to parquet format.
+
+#### Other
+
+- Rely more on `@inheritParams` to simply documentation of functions arguments #38. This leads to some renaming of arguments (e.g `path_to_csv` -> `path_to_file`...)
+- Arguments `compression` and `compression_level` are now passed to write_parquet_at_once and write_parquet_by_chunk functions and now available in main conversion functions of `parquetize`  #36
+- Group `@importFrom` in a file to facilitate their maintenance #37
+- work on download_extract tests #43
+
+# parquetize 0.5.6
+
+This release includes :
+
+#### Possibility to use a RDBMS as source
+
+You can convert to parquet any query you want on any DBI compatible RDBMS :
+
+```{r}
+dbi_connection <- DBI::dbConnect(RSQLite::SQLite(),
+  system.file("extdata","iris.sqlite",package = "parquetize"))
+  
+# Reading iris table from local sqlite database
+# and conversion to one parquet file :
+dbi_to_parquet(
+  conn = dbi_connection,
+  sql_query = "SELECT * FROM iris",
+  path_to_parquet = tempdir(),
+  parquetname = "iris"
+)
+```
+
+You can find more information on
+[`dbi_to_parquet`](https://ddotta.github.io/parquetize/reference/dbi_to_parquet.html) documentation.
+
+#### check_parquet function
+
+- a new [check_parquet](https://ddotta.github.io/parquetize/reference/check_parquet.html) function that check if a dataset/file is valid and return columns and arrow type
+
+#### Deprecations
+
+Two arguments are deprecated to avoid confusion with arrow concept and keep consistency
+
+* `chunk_size` is replaced by `max_rows` (chunk size is an arrow concept).
+* `chunk_memory_size` is replaced by `max_memory` for consistency
+
+#### Other
+
+- refactoring : extract the logic to write parquet files as chunk or at once in write_parquet_by_chunk and write_parquet_at_once
+- a big test's refactoring : all _to_parquet output files are formally validate (readable as parquet, number of lines, partitions, number of files).
+- use cli_abort instead of cli_alert_danger with stop("") everywhere
+- some minors changes
+- bugfix: table_to_parquet did not select columns as expected
+- bugfix: skip_if_offline tests with download
+
 # parquetize 0.5.5
 
 This release includes :  
