@@ -21,8 +21,11 @@ get_lines_for_memory <- function(data, max_memory = 4000) {
 
 haven_read_function_by_extension <- list(
   "sas7bdat" = haven::read_sas,
+  "SAS7BDAT" = haven::read_sas,
   "sav" = haven::read_sav,
-  "dta" = haven::read_dta
+  "SAV" = haven::read_sav,
+  "dta" = haven::read_dta,
+  "DTA" = haven::read_dta
 )
 
 #' @name get_read_function_for_file
@@ -81,7 +84,7 @@ is_zip <- function(path) {
 #'
 #' @param ds a dataset/parquet file
 #'
-#' @return a tibble with 3 columns :
+#' @return a tibble with 2 columns :
 #'
 #'   * the column name (string)
 #'   * the arrow type (string)
